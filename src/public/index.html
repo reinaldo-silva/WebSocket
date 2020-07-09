@@ -20,30 +20,30 @@
         </form>
 
         <script type="text/javascript">
-    var socket = io('http://localhost:3000');
+    var socket = io('http://localhost:3001');
 
-    function renderMessage(message) {
-        $('.messages').append('<div class="message"><strong>'+ message.author +'</strong>: ' + message.message + '</div>')
+    function renderMessage(message) {//linhas do chat
+        $('.messages').append('<div class="message"><strong>'+ message.status +'</strong>: ' + message.description + '</div>')
     }
 
     socket.on('recivedMessage', function(message){
         renderMessage(message);
     });
 
-    socket.on('previousMessages', function(messages){
-        for(message of messages){
-            renderMessage(message);
+    socket.on('previousMessages', function(error){
+        for(erro of error){
+            renderMessage(erro);
         }
     });
 
     $('#chat').submit(function(event){
         event.preventDefault();
 
-        var author = $('input[name=username]').val();
+        var author = $('input[name=username]').val();//pega os valores do input
         var message = $('input[name=message]').val();
 
-        if(author.length && message.length){
-            var messageObject = {
+        if(author.length && message.length){//verifica se tem algo escrito 
+            var messageObject = {//armazena os valores na variavel 
                 author: author,
                 message: message,
             };

@@ -1,1 +1,3 @@
 yarn add express ejs socket.io
+
+socket.io => meio de comunicação entre front end com o back end 
