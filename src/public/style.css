@@ -56,11 +56,16 @@ html, body {
   }
 
   .blink_me {
-    animation: blinker 2s linear infinite;
+    animation: blinker 1s linear infinite;
   }
   
   @keyframes blinker {
     50% {
       opacity: 0.8;
     }
+  }
+
+  .grad1 {
+    background-color: blue; /* For browsers that do not support gradients */
+    background-image: linear-gradient(to bottom right, #114455 ,#490058); /* Standard syntax (must be last) */
   }

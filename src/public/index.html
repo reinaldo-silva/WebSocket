@@ -11,7 +11,7 @@
             src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
         <link rel="stylesheet" href="style.css">
     </head>
-    <body>
+    <body class="grad1">
         <form id="chat">
             <input type="text" name="username" placeholder="Digite seu usuário">
             <div class="messages"></div>
@@ -26,16 +26,16 @@
         $('.messages').append('<div class="message blink_me"><strong>'+ message.status +'</strong>: ' + message.description + '</div>')
     }
 
-    window.setTimeout(function(){
-    location.reload();
-    }, 5000);
+    setInterval(function(){
+    socket.emit('refresh');
+    }, 1000);
 
     socket.on('recivedMessage', function(message){
         renderMessage(message);
     });
 
     socket.on('previousMessages', function(error){
-        $('.messages').val("");
+        $('.messages').html("");
 
         for(erro of error){
             renderMessage(erro);

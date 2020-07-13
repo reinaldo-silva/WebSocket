@@ -23,7 +23,6 @@ app.post("/create", async (req, res) => {
   try {
     erros.push(req.body);
 
-    refresh(req.body);
     return res.send(req.body);
 
   } catch (err) {
@@ -35,14 +34,6 @@ app.use("/", (req, res) => {
   res.render("index.html");
 });
 
-function refresh(params){
-  io.on("connection", (socket) => {
-
-    socket.broadcast.emit("recivedMessage", params);
-
-  });
-}
-
 let erros = [];
 
 //.on escuta e o emit manda a mensagem
@@ -51,6 +42,11 @@ io.on("connection", (socket) => {
   console.log(`Socket conectado: ${socket.id}`); //toda vez que algum socket for conectado vai haver uma mensagem avisando
 
   socket.emit("previousMessages", erros); //manda todas as mensagens que ja estao armazenas para o front caso seja atualizado a pagina
+
+
+  socket.on('refresh', () => {
+    socket.emit("previousMessages", erros);
+  });
 
   socket.on("sendMessage", (data) => {
     //receber a mensagem do front
