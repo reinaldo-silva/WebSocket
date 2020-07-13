@@ -18,12 +18,15 @@ app.set("views", path.join(__dirname, "public"));
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "html");
 
+/*------------------------------------------------------------------------------------*/
+
 app.get("/show", erroController.index);
 app.post("/create", async (req, res) => {
   try {
-    erros.push(req.body);
 
-    return res.send(req.body);
+    const err = await Erro.create(req.body);
+
+    return res.send(err);
 
   } catch (err) {
     return res.status(400).send({ error: "Error add new error" });
@@ -34,25 +37,28 @@ app.use("/", (req, res) => {
   res.render("index.html");
 });
 
-let erros = [];
+/**-------------------------------------------------------------------------------------- */
 
+
+let erroFlag = null;
 //.on escuta e o emit manda a mensagem
 io.on("connection", (socket) => {
   //. on escuta uma conexão
   console.log(`Socket conectado: ${socket.id}`); //toda vez que algum socket for conectado vai haver uma mensagem avisando
 
-  socket.emit("previousMessages", erros); //manda todas as mensagens que ja estao armazenas para o front caso seja atualizado a pagina
+  socket.emit("previousMessages", erroFlag); //manda todas as mensagens que ja estao armazenas para o front caso seja atualizado a pagina
 
+  socket.on('refresh', async () => {
 
-  socket.on('refresh', () => {
+    const erros = await Erro.find();
+
+    if(erros != erroFlag){
+
+      erroFlag = erros;
+
     socket.emit("previousMessages", erros);
-  });
-
-  socket.on("sendMessage", (data) => {
-    //receber a mensagem do front
-    erros.push(data);
-    socket.broadcast.emit("recivedMessage", data); // o broadcast manda a mensagem para todos od sockets conectados
+    }
   });
 });
 
-server.listen(3001);
+server.listen(3000);

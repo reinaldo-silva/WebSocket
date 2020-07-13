@@ -1,64 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>chat</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>chat</title>
 
-        <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body class="grad1">
-        <form id="chat">
-            <input type="text" name="username" placeholder="Digite seu usuário">
-            <div class="messages"></div>
-            <input type="text" name="message" placeholder="Digite sua nensagem">
-            <button type="submit">Enviar</button>
-        </form>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="grad1">
+    <div class="conteudo">
+      <form id="chat">
+        <div class="messages"></div>
+      </form>
+      <div></div>
+    </div>
 
-        <script type="text/javascript">
-    var socket = io('http://localhost:3001');
+    <script type="text/javascript">
+      var socket = io("http://localhost:3000");
 
-    function renderMessage(message) {//linhas do chat
-        $('.messages').append('<div class="message blink_me"><strong>'+ message.status +'</strong>: ' + message.description + '</div>')
-    }
+      function renderMessage(message) {
+        //linhas do chat
+        $(".messages").append(
+          '<div class="message blink_me"><strong>' +
+            message.status +
+            "</strong>: " +
+            message.description +
+            "</div>"
+        );
+      }
 
-    setInterval(function(){
-    socket.emit('refresh');
-    }, 1000);
+      setInterval(function () {
+        socket.emit("refresh");
+      }, 1000);
 
-    socket.on('recivedMessage', function(message){
-        renderMessage(message);
-    });
+      socket.on("previousMessages", function (error) {
+        $(".messages").html("");
 
-    socket.on('previousMessages', function(error){
-        $('.messages').html("");
-
-        for(erro of error){
-            renderMessage(erro);
+        for (erro of error) {
+          renderMessage(erro);
         }
-    });
-
-    $('#chat').submit(function(event){
-        event.preventDefault();
-
-        var statusMsg = $('input[name=username]').val();//pega os valores do input
-        var descriptionMsg = $('input[name=message]').val();
-
-        if(statusMsg.length && descriptionMsg.length){//verifica se tem algo escrito 
-            var messageObject = {//armazena os valores na variavel 
-                status: statusMsg,
-                description: descriptionMsg,
-            };
-
-            renderMessage(messageObject);
-
-            socket.emit('sendMessage', messageObject);
-        };
-    })
+      });
     </script>
-    </body>
+  </body>
 </html>
