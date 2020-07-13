@@ -14,6 +14,7 @@ module.exports = {
 
     async create(req, res) {
       try{
+
         const erro = await Erro.create(req.body);
     
         return res.send({erro});

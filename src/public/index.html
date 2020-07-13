@@ -23,14 +23,20 @@
     var socket = io('http://localhost:3001');
 
     function renderMessage(message) {//linhas do chat
-        $('.messages').append('<div class="message"><strong>'+ message.status +'</strong>: ' + message.description + '</div>')
+        $('.messages').append('<div class="message blink_me"><strong>'+ message.status +'</strong>: ' + message.description + '</div>')
     }
+
+    window.setTimeout(function(){
+    location.reload();
+    }, 5000);
 
     socket.on('recivedMessage', function(message){
         renderMessage(message);
     });
 
     socket.on('previousMessages', function(error){
+        $('.messages').val("");
+
         for(erro of error){
             renderMessage(erro);
         }
@@ -39,13 +45,13 @@
     $('#chat').submit(function(event){
         event.preventDefault();
 
-        var author = $('input[name=username]').val();//pega os valores do input
-        var message = $('input[name=message]').val();
+        var statusMsg = $('input[name=username]').val();//pega os valores do input
+        var descriptionMsg = $('input[name=message]').val();
 
-        if(author.length && message.length){//verifica se tem algo escrito 
+        if(statusMsg.length && descriptionMsg.length){//verifica se tem algo escrito 
             var messageObject = {//armazena os valores na variavel 
-                author: author,
-                message: message,
+                status: statusMsg,
+                description: descriptionMsg,
             };
 
             renderMessage(messageObject);
